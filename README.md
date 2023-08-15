@@ -7,8 +7,8 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 # 📊 GitHub Stats:
 <div align="center">
 <div>
-<img src="https://github-readme-stats.vercel.app/api?username=Iskandar1412&include_all_commits=true&count_private=true&show_icons=true&line_height=20&title_color=7A7ADB&icon_color=2234AE&text_color=D3D3D3&bg_color=0,000000,130F40" height="100"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="https://github-readme-stats.vercel.app/api/top-langs?username=Iskandar1412&show_icons=true&locale=en&layout=compact&line_height=20&title_color=7A7ADB&icon_color=2234AE&text_color=D3D3D3&bg_color=0,000000,130F40" height="100"  alt="0xabdulkhalid"/>
+<img src="https://github-readme-stats.vercel.app/api?username=Iskandar1412&include_all_commits=true&count_private=true&show_icons=true&line_height=20&title_color=7A7ADB&icon_color=2234AE&text_color=D3D3D3&bg_color=0,000000,130F40" height="200"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="https://github-readme-stats.vercel.app/api/top-langs?username=Iskandar1412&show_icons=true&locale=en&layout=compact&line_height=20&title_color=7A7ADB&icon_color=2234AE&text_color=D3D3D3&bg_color=0,000000,130F40" height="200"  alt="0xabdulkhalid"/>
     
 <!--![](https://github-readme-stats.vercel.app/api?username=Iskandar1412&theme=prussian&hide_border=false&include_all_commits=false&count_private=false)<br/>
 ![](https://github-readme-streak-stats.herokuapp.com/?user=Iskandar1412&theme=prussian&hide_border=false)<br/>
