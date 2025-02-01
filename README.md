@@ -8,24 +8,34 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 <!-- ## 📊 GitHub Stats: -->
 <!-- LANGUAGES-START -->
+## 📊 GitHub Stats
+
+
 <table align="center">
   <tr>
     <td align="center">
-      <img src="./node_scripts/scripts/github_stats.png"/>
+      <img src="./node_scripts/scripts/github_stats.png" />
     </td>
     <td align="center">
-      <img src="./node_scripts/scripts/language_chart.png"/>
+      <img src="./node_scripts/scripts/language_chart.png" />
     </td>
   </tr>
 </table>
 
----
+
+---------
 
 
 ## 📊 Lenguajes Usados
+
+
 ![Lenguajes más usados](./node_scripts/scripts/languages_chart.png)
 
-<!-- Última actualización: 2025-02-01 00:20:02 UTC -->
+
+
+
+<!-- Última actualización: 2025-02-01T07:24:25.888Z -->
+
 <!-- LANGUAGES-END -->
 ------
 ![github contribution grid snake animation](https://raw.githubusercontent.com/rfyiamcool/rfyiamcool/output/github-contribution-grid-snake.svg)
