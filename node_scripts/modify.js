@@ -34,7 +34,7 @@ function updateReadme() {
   </tr>
 </table>`,
         "\n\n---------\n\n",
-        "## 📊 Lenguajes Usados\n\n",
+        "## 🔢 Lenguajes Usados\n\n",
         `<table align="center">
   <tr>
     <td align="center">
