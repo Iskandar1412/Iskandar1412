@@ -67,9 +67,9 @@ function generateLanguageChart(languages) {
 
     // Guardar imagen
     const buffer = canvas.toBuffer("image/png");
-    const outputPath = path.join(scriptsPath, "language_chart.png");
+    const outputPath = path.join(scriptsPath, "languages_chart.png");
     fs.writeFileSync(outputPath, buffer);
-    console.log(`✅ Imagen 'language_chart.png' generada correctamente.`);
+    console.log(`✅ Imagen 'languages_chart.png' generada correctamente.`);
 }
 
 module.exports = generateLanguageChart;
