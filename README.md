@@ -29,12 +29,18 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 ## 📊 Lenguajes Usados
 
 
-![Lenguajes más usados](./node_scripts/scripts/languages_chart.png)
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/languages_chart.png" />
+    </td>
+  </tr>
+</table>
 
 
 
 
-<!-- Última actualización: 2025-02-01T07:24:25.888Z -->
+<!-- Última actualización: 2025-02-01T07:29:13.532Z -->
 
 <!-- LANGUAGES-END -->
 ------
