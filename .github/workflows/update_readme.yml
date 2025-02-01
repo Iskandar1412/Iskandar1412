@@ -1,0 +1,52 @@
+name: Actualizar README con gráficos de GitHub
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # Ejecuta todos los días a las 12 PM UTC
+  workflow_dispatch:  # Permite ejecutarlo manualmente desde GitHub Actions
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Permiso de escritura en el repo
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # Evita que sobrescriba credenciales
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Instalar dependencias
+        run: npm install chartjs-node-canvas axios
+
+      - name: Crear carpetas necesarias
+        run: mkdir -p node_scripts/scripts  # Asegurar que la carpeta de imágenes exista
+
+      - name: Generar gráficas con Node.js
+        env:
+          PAT_GITHUB_PRIVATE: ${{ secrets.PAT_GITHUB_PRIVATE }}
+        run: node node_scripts/index.js
+
+      - name: Verificar cambios en README.md
+        run: |
+          echo "🔍 Comparando cambios en README.md..."
+          git diff README.md || echo "⚠️ No se detectaron cambios en el archivo."
+          cat README.md  # Muestra el contenido actual del README para depuración
+
+      - name: Configurar Git con PAT (para hacer push)
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/Iskandar1412/Iskandar1412.git
+
+      - name: Confirmar y subir cambios
+        run: |
+          git add README.md node_scripts/scripts/*.png
+          git commit -m "Actualización automática de gráficos en README" || echo "⚠️ Sin cambios para confirmar"
+          git push origin main || git push --force origin main
