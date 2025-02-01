@@ -2,7 +2,7 @@ const { createCanvas } = require("canvas");
 const fs = require("fs");
 const path = require("path");
 
-const WIDTH = 400;
+const WIDTH = 800;
 const PADDING = 20;
 const BAR_HEIGHT = 14;
 const BAR_SPACING = 40;
@@ -42,7 +42,7 @@ function generateLanguageChart(languages) {
     // Título
     ctx.fillStyle = "#FFFFFF";
     ctx.font = "bold 16px Arial";
-    ctx.fillText("Most Used Languages", PADDING, 30);
+    ctx.fillText("Use Of Languages", PADDING, 30);
 
     const barX = PADDING;
     const barWidth = WIDTH - PADDING * 2;
