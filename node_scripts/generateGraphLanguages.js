@@ -47,7 +47,14 @@ function generateLanguageChart(languages) {
     const barX = PADDING;
     const barWidth = WIDTH - PADDING * 2;
     let yOffset = 60;
-    const colors = ["#FFD700", "#FF6384", "#FF8C00", "#8A2BE2", "#00BFFF", "#4682B4", "#32CD32", "#DC143C", "#8B4513"];
+    const colors = [
+        "#FFD700", "#FF6384", "#FF8C00", "#8A2BE2", "#00BFFF", "#4682B4", "#32CD32", "#DC143C", "#8B4513",
+        "#E6E6FA", "#D2691E", "#7FFF00", "#FF4500", "#ADFF2F", "#9400D3", "#20B2AA", "#5F9EA0", "#DC143C",
+        "#00CED1", "#DAA520", "#FF1493", "#00FA9A", "#8B008B", "#FF69B4", "#B22222", "#32CD32", "#8B0000",
+        "#4169E1", "#2E8B57", "#800000", "#BDB76B", "#3CB371", "#7B68EE", "#6A5ACD", "#FFB6C1", "#9932CC",
+        "#8A2BE2", "#A52A2A", "#DEB887", "#5F9EA0", "#7FFF00", "#D2691E", "#6495ED", "#FF7F50", "#DC143C",
+        "#00FFFF", "#00008B", "#008B8B", "#B8860B", "#A9A9A9", "#006400"
+    ];
 
     languages.forEach((lang, index) => {
         const langWidth = (lang.percent / 100) * barWidth;
