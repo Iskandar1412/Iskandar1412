@@ -5,9 +5,13 @@ const headers = { Authorization: `Bearer ${GITHUB_TOKEN}` };
 const USERNAME = "Iskandar1412";
 
 async function fetchContributionsLastYear() {
+    const lastYear = new Date().getFullYear() - 1;
+    const fromDate = `${lastYear}-01-01T00:00:00Z`;
+    const toDate = `${lastYear}-12-31T23:59:59Z`;
+
     const query = `{
         viewer {
-            contributionsCollection(from: \"${new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString()}\", to: \"${new Date().toISOString()}\") {
+            contributionsCollection(from: "${fromDate}", to: "${toDate}") {
                 contributionCalendar {
                     totalContributions
                 }
