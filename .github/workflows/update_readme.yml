@@ -1,4 +1,4 @@
-name: Actualizar README con lenguajes usados
+name: Actualizar README con gráficos de GitHub
 
 on:
   schedule:
@@ -17,30 +17,27 @@ jobs:
         with:
           persist-credentials: false  # Evita que sobrescriba credenciales
 
-      - name: Configurar Python
-        uses: actions/setup-python@v3
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: "3.x"
+          node-version: "18"
 
       - name: Instalar dependencias
-        run: pip install requests matplotlib
+        run: npm install chartjs-node-canvas axios
 
-      - name: Ejecutar script para actualizar README
+      - name: Crear carpetas necesarias
+        run: mkdir -p node_scripts/scripts  # Asegurar que la carpeta de imágenes exista
+
+      - name: Generar gráficas con Node.js
         env:
           PAT_GITHUB_PRIVATE: ${{ secrets.PAT_GITHUB_PRIVATE }}
-        run: python scripts/github_languages.py
-
-      - name: Forzar cambios en README.md si es necesario
-        run: |
-          touch README.md  # Cambia el timestamp del archivo
-          git add -A  # Asegura que se agregan todos los cambios
-          git status  # Verifica qué detecta `git`
+        run: node node_scripts/index.js
 
       - name: Verificar cambios en README.md
         run: |
           echo "🔍 Comparando cambios en README.md..."
           git diff README.md || echo "⚠️ No se detectaron cambios en el archivo."
-          cat README.md  # Imprime el contenido actual para depuración
+          cat README.md  # Muestra el contenido actual del README para depuración
 
       - name: Configurar Git con PAT (para hacer push)
         run: |
@@ -50,6 +47,6 @@ jobs:
 
       - name: Confirmar y subir cambios
         run: |
-          git add .
-          git commit -m "Actualización automática de lenguajes en README" || echo "⚠️ Sin cambios para confirmar"
+          git add README.md node_scripts/scripts/*.png
+          git commit -m "Actualización automática de gráficos en README" || echo "⚠️ Sin cambios para confirmar"
           git push origin main || git push --force origin main
