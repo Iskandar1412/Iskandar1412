@@ -26,7 +26,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 ---------
 
 
-## 📊 Lenguajes Usados
+## 🔢 Lenguajes Usados
 
 
 <table align="center">
@@ -40,7 +40,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 
 
-<!-- Última actualización: 2025-02-01T12:14:31.733Z -->
+<!-- Última actualización: 2025-02-01T14:14:39.226Z -->
 
 <!-- LANGUAGES-END -->
 ------
