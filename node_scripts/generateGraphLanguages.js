@@ -5,8 +5,9 @@ const path = require("path");
 const WIDTH = 400;
 const PADDING = 20;
 const BAR_HEIGHT = 14;
-const BAR_SPACING = 30;
+const BAR_SPACING = 40;
 const BORDER_RADIUS = 15;
+const TEXT_SPACING = 8;
 const scriptsPath = path.join(__dirname, "scripts");
 
 if (!fs.existsSync(scriptsPath)) {
@@ -45,7 +46,7 @@ function generateLanguageChart(languages) {
 
     const barX = PADDING;
     const barWidth = WIDTH - PADDING * 2;
-    let yOffset = 50;
+    let yOffset = 60;
     const colors = ["#FFD700", "#FF6384", "#FF8C00", "#8A2BE2", "#00BFFF", "#4682B4", "#32CD32", "#DC143C", "#8B4513"];
 
     languages.forEach((lang, index) => {
@@ -58,8 +59,8 @@ function generateLanguageChart(languages) {
         
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "12px Arial";
-        ctx.fillText(lang.lang, barX, yOffset + BAR_HEIGHT + 4);
-        ctx.fillText(`${lang.percent}%`, barX + barWidth - 40, yOffset + BAR_HEIGHT + 4);
+        ctx.fillText(lang.lang, barX, yOffset - TEXT_SPACING);
+        ctx.fillText(`${lang.percent}%`, barX + barWidth - 40, yOffset - TEXT_SPACING);
         
         yOffset += BAR_SPACING;
     });
