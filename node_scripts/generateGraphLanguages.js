@@ -3,10 +3,10 @@ const fs = require("fs");
 const path = require("path");
 
 const WIDTH = 400;
-const HEIGHT = 500;
-const BAR_HEIGHT = 12;
 const PADDING = 20;
-const BAR_SPACING = 25;
+const BAR_HEIGHT = 14;
+const BAR_SPACING = 30;
+const BORDER_RADIUS = 15;
 const scriptsPath = path.join(__dirname, "scripts");
 
 if (!fs.existsSync(scriptsPath)) {
@@ -14,18 +14,29 @@ if (!fs.existsSync(scriptsPath)) {
 }
 
 function generateLanguageChart(languages) {
-    const canvasHeight = PADDING * 2 + languages.length * BAR_SPACING;
+    const canvasHeight = PADDING * 2 + languages.length * BAR_SPACING + PADDING;
     const canvas = createCanvas(WIDTH, canvasHeight);
     const ctx = canvas.getContext("2d");
 
-    // Fondo
+    // Fondo con bordes redondeados
     ctx.fillStyle = "#1E293B";
-    ctx.fillRect(0, 0, WIDTH, canvasHeight);
+    ctx.beginPath();
+    ctx.moveTo(BORDER_RADIUS, 0);
+    ctx.lineTo(WIDTH - BORDER_RADIUS, 0);
+    ctx.arcTo(WIDTH, 0, WIDTH, BORDER_RADIUS, BORDER_RADIUS);
+    ctx.lineTo(WIDTH, canvasHeight - BORDER_RADIUS);
+    ctx.arcTo(WIDTH, canvasHeight, WIDTH - BORDER_RADIUS, canvasHeight, BORDER_RADIUS);
+    ctx.lineTo(BORDER_RADIUS, canvasHeight);
+    ctx.arcTo(0, canvasHeight, 0, canvasHeight - BORDER_RADIUS, BORDER_RADIUS);
+    ctx.lineTo(0, BORDER_RADIUS);
+    ctx.arcTo(0, 0, BORDER_RADIUS, 0, BORDER_RADIUS);
+    ctx.closePath();
+    ctx.fill();
 
     // Borde
     ctx.strokeStyle = "#4B5563";
     ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, WIDTH, canvasHeight);
+    ctx.stroke();
 
     // Título
     ctx.fillStyle = "#FFFFFF";
@@ -47,8 +58,8 @@ function generateLanguageChart(languages) {
         
         ctx.fillStyle = "#FFFFFF";
         ctx.font = "12px Arial";
-        ctx.fillText(lang.lang, barX, yOffset - 2);
-        ctx.fillText(`${lang.percent}%`, barX + barWidth - 40, yOffset - 2);
+        ctx.fillText(lang.lang, barX, yOffset + BAR_HEIGHT + 4);
+        ctx.fillText(`${lang.percent}%`, barX + barWidth - 40, yOffset + BAR_HEIGHT + 4);
         
         yOffset += BAR_SPACING;
     });
