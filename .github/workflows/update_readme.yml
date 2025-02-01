@@ -1,0 +1,55 @@
+name: Actualizar README con lenguajes usados
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # Ejecuta todos los días a las 12 PM UTC
+  workflow_dispatch:  # Permite ejecutarlo manualmente desde GitHub Actions
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Permiso de escritura en el repo
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false  # Evita que sobrescriba credenciales
+
+      - name: Configurar Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+
+      - name: Instalar dependencias
+        run: pip install requests matplotlib
+
+      - name: Ejecutar script para actualizar README
+        env:
+          PAT_GITHUB_PRIVATE: ${{ secrets.PAT_GITHUB_PRIVATE }}
+        run: python scripts/github_languages.py
+
+      - name: Forzar cambios en README.md si es necesario
+        run: |
+          touch README.md  # Cambia el timestamp del archivo
+          git add -A  # Asegura que se agregan todos los cambios
+          git status  # Verifica qué detecta `git`
+
+      - name: Verificar cambios en README.md
+        run: |
+          echo "🔍 Comparando cambios en README.md..."
+          git diff README.md || echo "⚠️ No se detectaron cambios en el archivo."
+          cat README.md  # Imprime el contenido actual para depuración
+
+      - name: Configurar Git con PAT (para hacer push)
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_GITHUB }}@github.com/Iskandar1412/Iskandar1412.git
+
+      - name: Confirmar y subir cambios
+        run: |
+          git add .
+          git commit -m "Actualización automática de lenguajes en README" || echo "⚠️ Sin cambios para confirmar"
+          git push origin main || git push --force origin main
