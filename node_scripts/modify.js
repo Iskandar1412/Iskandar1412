@@ -35,7 +35,13 @@ function updateReadme() {
 </table>`,
         "\n\n---------\n\n",
         "## 📊 Lenguajes Usados\n\n",
-        "![Lenguajes más usados](./node_scripts/scripts/languages_chart.png)\n\n\n",
+        `<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/languages_chart.png" />
+    </td>
+  </tr>
+</table>\n\n\n`,
         `\n<!-- Última actualización: ${new Date().toISOString()} -->\n`
     ];
 
