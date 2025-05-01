@@ -40,7 +40,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 
 
-<!-- Última actualización: 2025-04-30T12:19:16.380Z -->
+<!-- Última actualización: 2025-05-01T12:18:28.827Z -->
 
 <!-- LANGUAGES-END -->
 ------
