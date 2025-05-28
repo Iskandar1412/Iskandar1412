@@ -172,7 +172,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 
 
-<!-- Última actualización: 2025-05-27T12:20:18.678Z -->
+<!-- Última actualización: 2025-05-28T12:20:08.241Z -->
 
 <!-- LANGUAGES-END -->
 ------
