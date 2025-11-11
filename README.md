@@ -48,6 +48,8 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
   <img src="https://skillicons.dev/icons?i=django" height="40" alt="django" title="Django"/>
   <img width="12" />
   <img src="https://skillicons.dev/icons?i=flask" height="40" alt="flask" title="Flask"/>
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=wordpress" height="40" alt="wordpress" title="WordPress"/>
 </div>
 
 ### 🗃️ Bases de Datos
@@ -140,39 +142,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 <!-- ## 📊 GitHub Stats: -->
 <!-- LANGUAGES-START -->
-## 📊 GitHub Stats
 
-
-<table align="center">
-  <tr>
-    <td align="center">
-      <img src="./node_scripts/scripts/github_stats.png" />
-    </td>
-    <td align="center">
-      <img src="./node_scripts/scripts/language_chart.png" />
-    </td>
-  </tr>
-</table>
-
-
----------
-
-
-## 🔢 Lenguajes Usados
-
-
-<table align="center">
-  <tr>
-    <td align="center">
-      <img src="./node_scripts/scripts/languages_chart.png" />
-    </td>
-  </tr>
-</table>
-
-
-
-
-<!-- Última actualización: 2025-06-21T12:17:31.945Z -->
 
 <!-- LANGUAGES-END -->
 ------

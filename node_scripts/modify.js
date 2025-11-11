@@ -4,7 +4,7 @@ const readmePath = "README.md";
 
 function updateReadme() {
     if (!fs.existsSync(readmePath)) {
-        console.error("⚠️ No se encontró el README.md");
+        console.error("No se encontró el README.md");
         return;
     }
 
@@ -13,7 +13,7 @@ function updateReadme() {
     const endMarker = "<!-- LANGUAGES-END -->";
 
     if (!readmeContent.includes(startMarker) || !readmeContent.includes(endMarker)) {
-        console.error("⚠️ No se encontraron los marcadores en el README. Verifica que estén presentes.");
+        console.error("No se encontraron los marcadores en el README. Verifica que estén presentes.");
         return;
     }
 
@@ -41,8 +41,8 @@ function updateReadme() {
       <img src="./node_scripts/scripts/languages_chart.png" />
     </td>
   </tr>
-</table>\n\n\n`,
-        `\n<!-- Última actualización: ${new Date().toISOString()} -->\n`
+</table>\n\n\n`
+        // `\n<!-- Última actualización: ${new Date().toISOString()} -->\n`
     ];
 
     const updatedReadme = [
@@ -52,7 +52,7 @@ function updateReadme() {
     ].join("\n");
 
     fs.writeFileSync(readmePath, updatedReadme, "utf-8");
-    console.log("✅ README.md actualizado correctamente.");
+    console.log("README.md actualizado correctamente.");
 }
 
 module.exports = updateReadme;
