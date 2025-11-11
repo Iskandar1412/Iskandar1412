@@ -142,6 +142,35 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 <!-- ## 📊 GitHub Stats: -->
 <!-- LANGUAGES-START -->
+## 📊 GitHub Stats
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/github_stats.png" />
+    </td>
+    <td align="center">
+      <img src="./node_scripts/scripts/language_chart.png" />
+    </td>
+  </tr>
+</table>
+
+
+---------
+
+
+## 🔢 Lenguajes Usados
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/languages_chart.png" />
+    </td>
+  </tr>
+</table>
+
 
 
 <!-- LANGUAGES-END -->
