@@ -5,6 +5,39 @@ const headers = { Authorization: `Bearer ${GITHUB_TOKEN}` };
 const USERNAME = "Iskandar1412";
 const CURRENT_YEAR = new Date().getFullYear();
 
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Wrapper para /search/commits que reintenta con espera si GitHub responde 403
+// por rate limit secundario (pasa si mandas varias búsquedas muy seguido).
+async function searchCommitsRequest(params, retries = 4) {
+    try {
+        return await axios.get("https://api.github.com/search/commits", { headers, params });
+    } catch (error) {
+        const status = error.response && error.response.status;
+        const isRateLimit = status === 403 || status === 429;
+
+        if (isRateLimit && retries > 0) {
+            const retryAfterHeader = error.response.headers["retry-after"];
+            const resetHeader = error.response.headers["x-ratelimit-reset"];
+            let waitMs = 15000;
+
+            if (retryAfterHeader) {
+                waitMs = parseInt(retryAfterHeader, 10) * 1000;
+            } else if (resetHeader) {
+                waitMs = Math.max(0, parseInt(resetHeader, 10) * 1000 - Date.now()) + 1000;
+            }
+
+            console.warn(`⚠️ Rate limit del Search API alcanzado. Esperando ${Math.ceil(waitMs / 1000)}s antes de reintentar...`);
+            await sleep(waitMs);
+            return searchCommitsRequest(params, retries - 1);
+        }
+
+        throw error;
+    }
+}
+
 async function fetchContributionsLastYear() {
     const lastYear = new Date().getFullYear() - 1;
     const fromDate = `${lastYear}-01-01T00:00:00Z`;
@@ -38,20 +71,18 @@ async function fetchAllCommitsViaSearch() {
     let fetchedCount;
 
     do {
-        const response = await axios.get("https://api.github.com/search/commits", {
-            headers,
-            params: {
-                q: `author:${USERNAME}`,
-                per_page: 100,
-                page,
-                sort: "author-date",
-                order: "desc",
-            },
+        const response = await searchCommitsRequest({
+            q: `author:${USERNAME}`,
+            per_page: 100,
+            page,
+            sort: "author-date",
+            order: "desc",
         });
         totalCount = response.data.total_count;
         fetchedCount = response.data.items.length;
         allItems = allItems.concat(response.data.items);
         page++;
+        if (fetchedCount === 100) await sleep(1200); // espaciar requests al Search API
     } while (fetchedCount === 100 && allItems.length < 1000);
 
     if (totalCount > allItems.length) {
@@ -66,12 +97,9 @@ async function fetchAllCommitsViaSearch() {
 // aunque tengas miles de commits en un año, el número es correcto igual.
 async function fetchCommitCountForYear(year) {
     try {
-        const response = await axios.get("https://api.github.com/search/commits", {
-            headers,
-            params: {
-                q: `author:${USERNAME} author-date:${year}-01-01..${year}-12-31`,
-                per_page: 1,
-            },
+        const response = await searchCommitsRequest({
+            q: `author:${USERNAME} author-date:${year}-01-01..${year}-12-31`,
+            per_page: 1,
         });
         return response.data.total_count;
     } catch (error) {
@@ -81,17 +109,20 @@ async function fetchCommitCountForYear(year) {
 }
 
 // Conteo por año para TODOS los años desde que existe la cuenta hasta el año actual.
+// Secuencial (no Promise.all) y con pausa entre cada request para no disparar
+// el rate limit secundario del Search API por mandar varias búsquedas en paralelo.
 async function fetchCommitsByYear(accountCreatedAt) {
     const startYear = new Date(accountCreatedAt).getFullYear();
     const years = [];
     for (let y = startYear; y <= CURRENT_YEAR; y++) years.push(y);
 
-    const counts = await Promise.all(years.map((y) => fetchCommitCountForYear(y)));
-
     const commitsByYear = {};
-    years.forEach((y, i) => {
-        if (counts[i] > 0) commitsByYear[y] = counts[i];
-    });
+    for (let i = 0; i < years.length; i++) {
+        const year = years[i];
+        const count = await fetchCommitCountForYear(year);
+        if (count > 0) commitsByYear[year] = count;
+        if (i < years.length - 1) await sleep(1200); // espaciar requests al Search API
+    }
     return commitsByYear;
 }
 
@@ -104,19 +135,17 @@ async function fetchCurrentYearCommitItems() {
     let fetchedCount;
 
     do {
-        const response = await axios.get("https://api.github.com/search/commits", {
-            headers,
-            params: {
-                q: `author:${USERNAME} author-date:${CURRENT_YEAR}-01-01..${CURRENT_YEAR}-12-31`,
-                per_page: 100,
-                page,
-                sort: "author-date",
-                order: "desc",
-            },
+        const response = await searchCommitsRequest({
+            q: `author:${USERNAME} author-date:${CURRENT_YEAR}-01-01..${CURRENT_YEAR}-12-31`,
+            per_page: 100,
+            page,
+            sort: "author-date",
+            order: "desc",
         });
         fetchedCount = response.data.items.length;
         allItems = allItems.concat(response.data.items);
         page++;
+        if (fetchedCount === 100) await sleep(1200); // espaciar requests al Search API
     } while (fetchedCount === 100 && allItems.length < 1000);
 
     return allItems;
@@ -173,9 +202,11 @@ async function fetchGitHubStats() {
             .slice(0, 10);
 
         // Conteo exacto de commits por CADA año que has tenido la cuenta (no limitado a 1000)
+        await sleep(1200);
         const commitsByYear = await fetchCommitsByYear(userResponse.data.created_at);
 
         // Commits exactos del año actual (1 ene - 31 dic), usados solo para lenguajes del año
+        await sleep(1200);
         const currentYearItems = await fetchCurrentYearCommitItems();
         const reposTouchedThisYear = new Set(
             currentYearItems
