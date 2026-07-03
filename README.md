@@ -199,7 +199,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 ---------
 
 
-## 🧑‍💻 Commits por Repositorio Propio
+## 🧑‍💻 Tus Repositorios (más recientes primero)
 
 
 <table align="center">
@@ -217,7 +217,7 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 ---------
 
 
-## 🤝 Repositorios de Colaboración (commits totales del repo)
+## 🤝 Repositorios de Colaboración (más recientes primero)
 
 
 <table align="center">
