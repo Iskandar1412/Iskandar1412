@@ -392,3 +392,5 @@ async function fetchTotalCommitCountInRepo(owner, repoName) {
         return null;
     }
 }
+
+module.exports = fetchGitHubStats;
