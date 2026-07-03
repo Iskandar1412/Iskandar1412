@@ -61,6 +61,67 @@ async function fetchAllCommitsViaSearch() {
     return { items: allItems, totalCount };
 }
 
+// Conteo EXACTO de commits para un año calendario específico (1 ene - 31 dic de ese año).
+// Usa total_count del Search API, así que no está limitado por el tope de 1000 items:
+// aunque tengas miles de commits en un año, el número es correcto igual.
+async function fetchCommitCountForYear(year) {
+    try {
+        const response = await axios.get("https://api.github.com/search/commits", {
+            headers,
+            params: {
+                q: `author:${USERNAME} author-date:${year}-01-01..${year}-12-31`,
+                per_page: 1,
+            },
+        });
+        return response.data.total_count;
+    } catch (error) {
+        console.warn(`⚠️ No se pudo obtener el conteo de commits de ${year}: ${error.message}`);
+        return 0;
+    }
+}
+
+// Conteo por año para TODOS los años desde que existe la cuenta hasta el año actual.
+async function fetchCommitsByYear(accountCreatedAt) {
+    const startYear = new Date(accountCreatedAt).getFullYear();
+    const years = [];
+    for (let y = startYear; y <= CURRENT_YEAR; y++) years.push(y);
+
+    const counts = await Promise.all(years.map((y) => fetchCommitCountForYear(y)));
+
+    const commitsByYear = {};
+    years.forEach((y, i) => {
+        if (counts[i] > 0) commitsByYear[y] = counts[i];
+    });
+    return commitsByYear;
+}
+
+// Trae los commits del AÑO ACTUAL exacto (1 enero - 31 diciembre), paginando hasta 1000.
+// Se usa para el top de lenguajes del año, así no depende de la lista general (que puede
+// estar sesgada hacia lo más reciente si tienes más de 1000 commits históricos).
+async function fetchCurrentYearCommitItems() {
+    let allItems = [];
+    let page = 1;
+    let fetchedCount;
+
+    do {
+        const response = await axios.get("https://api.github.com/search/commits", {
+            headers,
+            params: {
+                q: `author:${USERNAME} author-date:${CURRENT_YEAR}-01-01..${CURRENT_YEAR}-12-31`,
+                per_page: 100,
+                page,
+                sort: "author-date",
+                order: "desc",
+            },
+        });
+        fetchedCount = response.data.items.length;
+        allItems = allItems.concat(response.data.items);
+        page++;
+    } while (fetchedCount === 100 && allItems.length < 1000);
+
+    return allItems;
+}
+
 async function fetchGitHubStats() {
     try {
         console.log("📡 Obteniendo estadísticas de GitHub...");
@@ -85,17 +146,13 @@ async function fetchGitHubStats() {
 
         let commitActivity = Array(24).fill(0);
         let commitsLast30Days = Array(30).fill(0);
-        let commitsByYear = {};
         let commitsByRepo = {}; // { "owner/repo": { count, owner, isOwn } }
-        let reposTouchedThisYear = new Set();
 
         commitItems.forEach((item) => {
             const commitDate = new Date(item.commit.author.date);
             const hour = commitDate.getHours();
-            const year = commitDate.getFullYear();
 
             commitActivity[hour]++;
-            commitsByYear[year] = (commitsByYear[year] || 0) + 1;
 
             const daysAgo = Math.floor((Date.now() - commitDate.getTime()) / (1000 * 60 * 60 * 24));
             if (daysAgo >= 0 && daysAgo < 30) commitsLast30Days[29 - daysAgo]++;
@@ -108,16 +165,23 @@ async function fetchGitHubStats() {
                 commitsByRepo[repoFullName] = { count: 0, owner: repoOwner, isOwn };
             }
             commitsByRepo[repoFullName].count++;
-
-            if (year === CURRENT_YEAR && isOwn) {
-                reposTouchedThisYear.add(repoFullName);
-            }
         });
 
         const topCommitsByRepo = Object.entries(commitsByRepo)
             .map(([repo, data]) => ({ repo, ...data }))
             .sort((a, b) => b.count - a.count)
             .slice(0, 10);
+
+        // Conteo exacto de commits por CADA año que has tenido la cuenta (no limitado a 1000)
+        const commitsByYear = await fetchCommitsByYear(userResponse.data.created_at);
+
+        // Commits exactos del año actual (1 ene - 31 dic), usados solo para lenguajes del año
+        const currentYearItems = await fetchCurrentYearCommitItems();
+        const reposTouchedThisYear = new Set(
+            currentYearItems
+                .filter((item) => item.repository.owner.login.toLowerCase() === USERNAME.toLowerCase())
+                .map((item) => item.repository.full_name)
+        );
 
         // 2. Stars, lenguajes, PRs, issues -> solo repos propios (como antes)
         let totalStars = 0, totalPRs = 0, totalIssues = 0;
