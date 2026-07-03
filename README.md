@@ -173,6 +173,27 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 
 
+
+
+---------
+
+
+## 📅 Commits por Año
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/commits_per_year.png" />
+    </td>
+    <td align="center">
+      <img src="./node_scripts/scripts/top_languages_this_year.png" />
+    </td>
+  </tr>
+</table>
+
+
+
 <!-- LANGUAGES-END -->
 ------
 ![github contribution grid snake animation](https://raw.githubusercontent.com/rfyiamcool/rfyiamcool/output/github-contribution-grid-snake.svg)
