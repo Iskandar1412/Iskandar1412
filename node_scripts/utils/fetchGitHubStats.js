@@ -194,7 +194,9 @@ async function fetchTotalCommitCountInRepo(owner, repoName) {
         console.warn(`⚠️ No se pudo obtener el total de commits de ${owner}/${repoName}: ${error.message}`);
         return 0;
     }
+}
 
+async function fetchGitHubStats() {
     try {
         console.log("📡 Obteniendo estadísticas de GitHub...");
 
