@@ -3,6 +3,8 @@ const { calculateScore, getGrade } = require("./utils/calculateGrade");
 const generateGitHubStatsImage = require("./generateGitHubStatsImage");
 const generateMostUsedLanguages = require("./generateMostUsedLanguages");
 const generateGraphLanguages = require("./generateGraphLanguages");
+const generateCommitsPerYear = require("./generateCommitsPerYear");
+const generateTopLanguagesThisYear = require("./generateTopLanguagesThisYear");
 const updateReadme = require("./modify");
 
 async function main() {
@@ -16,6 +18,8 @@ async function main() {
     await generateGitHubStatsImage(stats, grade);
     await generateMostUsedLanguages(stats.languages);
     await generateGraphLanguages(stats.languages);
+    await generateCommitsPerYear(stats.commitsByYear);
+    await generateTopLanguagesThisYear(stats.languagesThisYear);
 
     await updateReadme();
 }

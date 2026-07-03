@@ -41,6 +41,18 @@ function updateReadme() {
       <img src="./node_scripts/scripts/languages_chart.png" />
     </td>
   </tr>
+</table>\n\n\n`,
+        "\n\n---------\n\n",
+        "## 📅 Commits por Año\n\n",
+        `<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/commits_per_year.png" />
+    </td>
+    <td align="center">
+      <img src="./node_scripts/scripts/top_languages_this_year.png" />
+    </td>
+  </tr>
 </table>\n\n\n`
         // `\n<!-- Última actualización: ${new Date().toISOString()} -->\n`
     ];
