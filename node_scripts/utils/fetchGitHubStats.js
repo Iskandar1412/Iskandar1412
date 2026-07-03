@@ -196,10 +196,12 @@ async function fetchGitHubStats() {
             commitsByRepo[repoFullName].count++;
         });
 
-        const topCommitsByRepo = Object.entries(commitsByRepo)
+        // Todos los repos donde tienes al menos un commit (propios y de colaboración).
+        // No se filtran ni limitan: si un repo aparece aquí es porque hay commits tuyos reales;
+        // repos compartidos contigo sin commits tuyos nunca llegan a esta lista.
+        const allCommitsByRepo = Object.entries(commitsByRepo)
             .map(([repo, data]) => ({ repo, ...data }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 10);
+            .sort((a, b) => b.count - a.count);
 
         // Conteo exacto de commits por CADA año que has tenido la cuenta (no limitado a 1000)
         await sleep(1200);
@@ -302,7 +304,7 @@ async function fetchGitHubStats() {
             commitActivity,
             commitsLast30Days,
             commitsByYear,
-            commitsByRepo: topCommitsByRepo,
+            commitsByRepo: allCommitsByRepo,
             prStatus,
             issueStatus,
             languages: sortedLanguages,

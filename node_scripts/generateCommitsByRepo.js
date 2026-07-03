@@ -20,7 +20,7 @@ const COLOR_EXTERNAL = "#FFD700"; // repos de colaboración / ajenos
 
 // commitsByRepo: [{ repo: "owner/name", count, owner, isOwn }, ...] ya ordenado desc
 function generateCommitsByRepo(commitsByRepo) {
-    const repos = commitsByRepo.slice(0, 10);
+    const repos = commitsByRepo;
     const canvasHeight = PADDING * 2 + 40 + repos.length * BAR_SPACING + PADDING;
     const canvas = createCanvas(WIDTH, canvasHeight);
     const ctx = canvas.getContext("2d");
