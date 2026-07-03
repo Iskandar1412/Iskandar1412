@@ -53,6 +53,15 @@ function updateReadme() {
       <img src="./node_scripts/scripts/top_languages_this_year.png" />
     </td>
   </tr>
+</table>\n\n\n`,
+        "\n\n---------\n\n",
+        "## 🤝 Commits por Repositorio (propios y colaboraciones)\n\n",
+        `<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/commits_by_repo.png" />
+    </td>
+  </tr>
 </table>\n\n\n`
         // `\n<!-- Última actualización: ${new Date().toISOString()} -->\n`
     ];

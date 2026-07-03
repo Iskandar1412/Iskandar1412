@@ -29,31 +29,36 @@ async function fetchContributionsLastYear() {
     }
 }
 
-// Trae TODOS los commits del usuario en un repo, paginando, filtrado por autor.
-// MAX_PAGES es un límite de seguridad para no disparar cientos de requests en repos gigantes.
-async function fetchAllCommitsForRepo(repoName, MAX_PAGES = 10) {
-    let allCommits = [];
+// Trae TODOS tus commits (repos propios Y ajenos) usando el Search API de GitHub.
+// Límite duro de la API: 1000 resultados por búsqueda (10 páginas de 100).
+async function fetchAllCommitsViaSearch() {
+    let allItems = [];
     let page = 1;
-    let fetched;
+    let totalCount = 0;
+    let fetchedCount;
 
     do {
-        const response = await axios.get(
-            `https://api.github.com/repos/${USERNAME}/${repoName}/commits`,
-            {
-                headers,
-                params: {
-                    author: USERNAME, // solo tus commits, no los de colaboradores
-                    per_page: 100,
-                    page,
-                },
-            }
-        );
-        fetched = response.data;
-        allCommits = allCommits.concat(fetched);
+        const response = await axios.get("https://api.github.com/search/commits", {
+            headers,
+            params: {
+                q: `author:${USERNAME}`,
+                per_page: 100,
+                page,
+                sort: "author-date",
+                order: "desc",
+            },
+        });
+        totalCount = response.data.total_count;
+        fetchedCount = response.data.items.length;
+        allItems = allItems.concat(response.data.items);
         page++;
-    } while (fetched.length === 100 && page <= MAX_PAGES);
+    } while (fetchedCount === 100 && allItems.length < 1000);
 
-    return allCommits;
+    if (totalCount > allItems.length) {
+        console.warn(`⚠️ Tienes ${totalCount} commits en total, pero el Search API de GitHub solo permite traer los primeros ${allItems.length}. El conteo de commits está topado ahí.`);
+    }
+
+    return { items: allItems, totalCount };
 }
 
 async function fetchGitHubStats() {
@@ -75,13 +80,50 @@ async function fetchGitHubStats() {
 
         repos = repos.filter(repo => !repo.fork);
 
-        let totalStars = 0, totalCommits = 0, totalPRs = 0, totalIssues = 0;
+        // 1. Commits: propios + ajenos, vía Search API
+        const { items: commitItems, totalCount: totalCommits } = await fetchAllCommitsViaSearch();
+
         let commitActivity = Array(24).fill(0);
+        let commitsLast30Days = Array(30).fill(0);
+        let commitsByYear = {};
+        let commitsByRepo = {}; // { "owner/repo": { count, owner, isOwn } }
+        let reposTouchedThisYear = new Set();
+
+        commitItems.forEach((item) => {
+            const commitDate = new Date(item.commit.author.date);
+            const hour = commitDate.getHours();
+            const year = commitDate.getFullYear();
+
+            commitActivity[hour]++;
+            commitsByYear[year] = (commitsByYear[year] || 0) + 1;
+
+            const daysAgo = Math.floor((Date.now() - commitDate.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysAgo >= 0 && daysAgo < 30) commitsLast30Days[29 - daysAgo]++;
+
+            const repoFullName = item.repository.full_name;
+            const repoOwner = item.repository.owner.login;
+            const isOwn = repoOwner.toLowerCase() === USERNAME.toLowerCase();
+
+            if (!commitsByRepo[repoFullName]) {
+                commitsByRepo[repoFullName] = { count: 0, owner: repoOwner, isOwn };
+            }
+            commitsByRepo[repoFullName].count++;
+
+            if (year === CURRENT_YEAR && isOwn) {
+                reposTouchedThisYear.add(repoFullName);
+            }
+        });
+
+        const topCommitsByRepo = Object.entries(commitsByRepo)
+            .map(([repo, data]) => ({ repo, ...data }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 10);
+
+        // 2. Stars, lenguajes, PRs, issues -> solo repos propios (como antes)
+        let totalStars = 0, totalPRs = 0, totalIssues = 0;
         let prStatus = { open: 0, closed: 0, merged: 0 };
         let issueStatus = { open: 0, closed: 0 };
-        let commitsLast30Days = Array(30).fill(0);
         let repoCreationTimeline = {};
-        let commitsByYear = {};
         const languageStats = {};
         const languageStatsThisYear = {};
         let totalBytes = 0;
@@ -93,50 +135,24 @@ async function fetchGitHubStats() {
             repoCreationTimeline[createdYear] = (repoCreationTimeline[createdYear] || 0) + 1;
 
             try {
-                let languagesData = {};
-                let repoTotalBytes = 0;
-
                 if (repo.languages_url) {
                     const langResponse = await axios.get(repo.languages_url, { headers });
-                    languagesData = langResponse.data;
-                    repoTotalBytes = Object.values(languagesData).reduce((a, b) => a + b, 0);
+                    const languagesData = langResponse.data;
+                    const repoTotalBytes = Object.values(languagesData).reduce((a, b) => a + b, 0);
 
                     for (const [lang, bytes] of Object.entries(languagesData)) {
-                        if (!languageStats[lang]) {
-                            languageStats[lang] = { bytes: 0, percent: 0 };
-                        }
+                        if (!languageStats[lang]) languageStats[lang] = { bytes: 0, percent: 0 };
                         languageStats[lang].bytes += bytes;
                     }
                     totalBytes += repoTotalBytes;
-                }
 
-                const repoCommits = await fetchAllCommitsForRepo(repo.name);
-                totalCommits += repoCommits.length;
-
-                let touchedThisYear = false;
-
-                repoCommits.forEach((commit) => {
-                    const commitDate = new Date(commit.commit.author.date);
-                    const hour = commitDate.getHours();
-                    commitActivity[hour]++;
-
-                    const year = commitDate.getFullYear();
-                    commitsByYear[year] = (commitsByYear[year] || 0) + 1;
-                    if (year === CURRENT_YEAR) touchedThisYear = true;
-
-                    const daysAgo = Math.floor((Date.now() - commitDate.getTime()) / (1000 * 60 * 60 * 24));
-                    if (daysAgo < 30) commitsLast30Days[29 - daysAgo]++;
-                });
-
-                // Si tocaste este repo este año, sus bytes de lenguaje cuentan para "lenguajes del año"
-                if (touchedThisYear && repoTotalBytes > 0) {
-                    for (const [lang, bytes] of Object.entries(languagesData)) {
-                        if (!languageStatsThisYear[lang]) {
-                            languageStatsThisYear[lang] = { bytes: 0, percent: 0 };
+                    if (reposTouchedThisYear.has(repo.full_name) && repoTotalBytes > 0) {
+                        for (const [lang, bytes] of Object.entries(languagesData)) {
+                            if (!languageStatsThisYear[lang]) languageStatsThisYear[lang] = { bytes: 0, percent: 0 };
+                            languageStatsThisYear[lang].bytes += bytes;
                         }
-                        languageStatsThisYear[lang].bytes += bytes;
+                        totalBytesThisYear += repoTotalBytes;
                     }
-                    totalBytesThisYear += repoTotalBytes;
                 }
 
                 const prsResponse = await axios.get(`https://api.github.com/repos/${USERNAME}/${repo.name}/pulls?state=all&per_page=100`, { headers });
@@ -145,12 +161,14 @@ async function fetchGitHubStats() {
                     if (pr.state === "closed") prStatus.closed++;
                     if (pr.merged_at) prStatus.merged++;
                 });
+                totalPRs += prsResponse.data.length;
 
                 const issuesResponse = await axios.get(`https://api.github.com/repos/${USERNAME}/${repo.name}/issues?state=all&per_page=100`, { headers });
                 issuesResponse.data.forEach((issue) => {
                     if (issue.pull_request) return;
                     if (issue.state === "open") issueStatus.open++;
                     if (issue.state === "closed") issueStatus.closed++;
+                    totalIssues++;
                 });
 
             } catch (error) {
@@ -163,7 +181,6 @@ async function fetchGitHubStats() {
                 languageStats[lang].percent = ((languageStats[lang].bytes / totalBytes) * 100).toFixed(2);
             });
         }
-
         if (totalBytesThisYear > 0) {
             Object.keys(languageStatsThisYear).forEach((lang) => {
                 languageStatsThisYear[lang].percent = ((languageStatsThisYear[lang].bytes / totalBytesThisYear) * 100).toFixed(2);
@@ -190,6 +207,7 @@ async function fetchGitHubStats() {
             commitActivity,
             commitsLast30Days,
             commitsByYear,
+            commitsByRepo: topCommitsByRepo,
             prStatus,
             issueStatus,
             languages: sortedLanguages,

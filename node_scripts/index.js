@@ -5,6 +5,7 @@ const generateMostUsedLanguages = require("./generateMostUsedLanguages");
 const generateGraphLanguages = require("./generateGraphLanguages");
 const generateCommitsPerYear = require("./generateCommitsPerYear");
 const generateTopLanguagesThisYear = require("./generateTopLanguagesThisYear");
+const generateCommitsByRepo = require("./generateCommitsByRepo");
 const updateReadme = require("./modify");
 
 async function main() {
@@ -20,6 +21,7 @@ async function main() {
     await generateGraphLanguages(stats.languages);
     await generateCommitsPerYear(stats.commitsByYear);
     await generateTopLanguagesThisYear(stats.languagesThisYear);
+    await generateCommitsByRepo(stats.commitsByRepo);
 
     await updateReadme();
 }
