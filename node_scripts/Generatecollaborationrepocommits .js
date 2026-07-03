@@ -14,11 +14,12 @@ if (!fs.existsSync(scriptsPath)) {
     fs.mkdirSync(scriptsPath, { recursive: true });
 }
 
-const BAR_COLOR = "#38BDF8";
+const BAR_COLOR = "#FFD700";
 
-// ownRepoCommits: [{ repo: "owner/name", count }, ...] ya ordenado desc
-function generateCommitsByRepo(ownRepoCommits) {
-    const repos = ownRepoCommits;
+// collaborationRepoCommits: [{ repo: "owner/name", totalCommits }, ...] ya ordenado desc
+// totalCommits = commits de TODO el repo (todos los autores), no solo los tuyos.
+function generateCollaborationRepoCommits(collaborationRepoCommits) {
+    const repos = collaborationRepoCommits;
     const canvasHeight = PADDING * 2 + 40 + repos.length * BAR_SPACING + PADDING;
     const canvas = createCanvas(WIDTH, canvasHeight);
     const ctx = canvas.getContext("2d");
@@ -45,20 +46,20 @@ function generateCommitsByRepo(ownRepoCommits) {
     // Título
     ctx.fillStyle = "#FFFFFF";
     ctx.font = "bold 16px Arial";
-    ctx.fillText("Commits by Your Repositories", PADDING, 30);
+    ctx.fillText("Collaboration Repos - Total Commits", PADDING, 30);
 
     if (repos.length === 0) {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#AAAAAA";
-        ctx.fillText("Sin commits registrados", PADDING, 80);
+        ctx.fillText("Sin repos de colaboración con commits tuyos", PADDING, 80);
     } else {
-        const maxCount = Math.max(...repos.map((r) => r.count), 1);
+        const maxCount = Math.max(...repos.map((r) => r.totalCommits), 1);
         const barX = PADDING + LABEL_WIDTH;
         const barMaxWidth = WIDTH - barX - PADDING - 40;
         let yOffset = 60;
 
         repos.forEach((r) => {
-            const barWidth = (r.count / maxCount) * barMaxWidth;
+            const barWidth = (r.totalCommits / maxCount) * barMaxWidth;
 
             // Fondo de barra
             ctx.fillStyle = "#33394D";
@@ -75,17 +76,17 @@ function generateCommitsByRepo(ownRepoCommits) {
             ctx.font = "12px Arial";
             ctx.fillText(label, PADDING, yOffset + BAR_HEIGHT - 4);
 
-            // Conteo al final de la barra
-            ctx.fillText(String(r.count), barX + barWidth + 8, yOffset + BAR_HEIGHT - 4);
+            // Total al final de la barra
+            ctx.fillText(String(r.totalCommits), barX + barWidth + 8, yOffset + BAR_HEIGHT - 4);
 
             yOffset += BAR_SPACING;
         });
     }
 
     const buffer = canvas.toBuffer("image/png");
-    const outputPath = path.join(scriptsPath, "commits_by_repo.png");
+    const outputPath = path.join(scriptsPath, "collaboration_repos.png");
     fs.writeFileSync(outputPath, buffer);
-    console.log(`✅ Imagen 'commits_by_repo.png' generada correctamente.`);
+    console.log(`✅ Imagen 'collaboration_repos.png' generada correctamente.`);
 }
 
-module.exports = generateCommitsByRepo;
+module.exports = generateCollaborationRepoCommits;

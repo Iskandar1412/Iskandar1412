@@ -55,11 +55,20 @@ function updateReadme() {
   </tr>
 </table>\n\n\n`,
         "\n\n---------\n\n",
-        "## 🤝 Commits por Repositorio (propios y colaboraciones)\n\n",
+        "## 🧑‍💻 Commits por Repositorio Propio\n\n",
         `<table align="center">
   <tr>
     <td align="center">
       <img src="./node_scripts/scripts/commits_by_repo.png" />
+    </td>
+  </tr>
+</table>\n\n\n`,
+        "\n\n---------\n\n",
+        "## 🤝 Repositorios de Colaboración (commits totales del repo)\n\n",
+        `<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/collaboration_repos.png" />
     </td>
   </tr>
 </table>\n\n\n`
