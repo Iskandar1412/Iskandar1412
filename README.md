@@ -199,13 +199,31 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 ---------
 
 
-## 🤝 Commits por Repositorio (propios y colaboraciones)
+## 🧑‍💻 Commits por Repositorio Propio
 
 
 <table align="center">
   <tr>
     <td align="center">
       <img src="./node_scripts/scripts/commits_by_repo.png" />
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+---------
+
+
+## 🤝 Repositorios de Colaboración (commits totales del repo)
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/collaboration_repos.png" />
     </td>
   </tr>
 </table>
