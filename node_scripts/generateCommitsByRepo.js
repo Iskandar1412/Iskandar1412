@@ -4,22 +4,35 @@ const path = require("path");
 
 const WIDTH = 700;
 const PADDING = 20;
-const BAR_HEIGHT = 16;
-const BAR_SPACING = 40;
+const ROW_HEIGHT = 32;
 const BORDER_RADIUS = 15;
-const LABEL_WIDTH = 180; // espacio reservado para el nombre del repo
 const scriptsPath = path.join(__dirname, "scripts");
 
 if (!fs.existsSync(scriptsPath)) {
     fs.mkdirSync(scriptsPath, { recursive: true });
 }
 
-const BAR_COLOR = "#38BDF8";
+function formatRelativeDate(dateStr) {
+    const date = new Date(dateStr);
+    const diffMs = Date.now() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-// ownRepoCommits: [{ repo: "owner/name", count }, ...] ya ordenado desc
-function generateCommitsByRepo(ownRepoCommits) {
-    const repos = ownRepoCommits;
-    const canvasHeight = PADDING * 2 + 40 + repos.length * BAR_SPACING + PADDING;
+    if (diffDays <= 0) return "Hoy";
+    if (diffDays === 1) return "Ayer";
+    if (diffDays < 30) return `Hace ${diffDays} días`;
+
+    const diffMonths = Math.floor(diffDays / 30);
+    if (diffMonths < 12) return `Hace ${diffMonths} mes${diffMonths > 1 ? "es" : ""}`;
+
+    const diffYears = Math.floor(diffMonths / 12);
+    return `Hace ${diffYears} año${diffYears > 1 ? "s" : ""}`;
+}
+
+// ownRepos: [{ repo: "owner/name", updatedAt: "2026-05-01T..." }, ...] ya ordenado
+// del más reciente al más antiguo (por pushed_at)
+function generateCommitsByRepo(ownRepos) {
+    const repos = ownRepos;
+    const canvasHeight = PADDING * 2 + 40 + repos.length * ROW_HEIGHT + PADDING;
     const canvas = createCanvas(WIDTH, canvasHeight);
     const ctx = canvas.getContext("2d");
 
@@ -44,41 +57,36 @@ function generateCommitsByRepo(ownRepoCommits) {
 
     // Título
     ctx.fillStyle = "#FFFFFF";
-    ctx.font = "bold 16px Arial";
-    ctx.fillText("Commits by Your Repositories", PADDING, 30);
+    ctx.font = "bold 18px Arial";
+    ctx.fillText("Your Repositories - Most Recently Updated", PADDING, 32);
 
     if (repos.length === 0) {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#AAAAAA";
-        ctx.fillText("Sin commits registrados", PADDING, 80);
+        ctx.fillText("Sin repositorios encontrados", PADDING, 80);
     } else {
-        const maxCount = Math.max(...repos.map((r) => r.count), 1);
-        const barX = PADDING + LABEL_WIDTH;
-        const barMaxWidth = WIDTH - barX - PADDING - 40;
         let yOffset = 60;
 
-        repos.forEach((r) => {
-            const barWidth = (r.count / maxCount) * barMaxWidth;
+        repos.forEach((r, index) => {
+            // Fila alterna para mejor lectura
+            if (index % 2 === 0) {
+                ctx.fillStyle = "#25324A";
+                ctx.fillRect(PADDING, yOffset - 20, WIDTH - PADDING * 2, ROW_HEIGHT);
+            }
 
-            // Fondo de barra
-            ctx.fillStyle = "#33394D";
-            ctx.fillRect(barX, yOffset, barMaxWidth, BAR_HEIGHT);
-
-            // Barra de valor
-            ctx.fillStyle = BAR_COLOR;
-            ctx.fillRect(barX, yOffset, barWidth, BAR_HEIGHT);
-
-            // Nombre del repo (truncado si es muy largo)
             let label = r.repo;
-            if (label.length > 26) label = label.slice(0, 23) + "...";
+            if (label.length > 55) label = label.slice(0, 52) + "...";
             ctx.fillStyle = "#FFFFFF";
-            ctx.font = "12px Arial";
-            ctx.fillText(label, PADDING, yOffset + BAR_HEIGHT - 4);
+            ctx.font = "14px Arial";
+            ctx.fillText(label, PADDING + 10, yOffset);
 
-            // Conteo al final de la barra
-            ctx.fillText(String(r.count), barX + barWidth + 8, yOffset + BAR_HEIGHT - 4);
+            const dateLabel = formatRelativeDate(r.updatedAt);
+            ctx.fillStyle = "#38BDF8";
+            ctx.font = "13px Arial";
+            const dateWidth = ctx.measureText(dateLabel).width;
+            ctx.fillText(dateLabel, WIDTH - PADDING - 10 - dateWidth, yOffset);
 
-            yOffset += BAR_SPACING;
+            yOffset += ROW_HEIGHT;
         });
     }
 

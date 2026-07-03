@@ -22,10 +22,10 @@ async function main() {
     await generateGraphLanguages(stats.languages);
     await generateCommitsPerYear(stats.commitsByYear);
     await generateTopLanguagesThisYear(stats.languagesThisYear);
-    await generateCommitsByRepo(stats.ownRepoCommits);
-    await generateCollaborationRepoCommits(stats.collaborationRepoCommits);
+    await generateCommitsByRepo(stats.ownRepos);
+    await generateCollaborationRepoCommits(stats.collaborationRepos);
 
     await updateReadme();
 }
 
-main(); 
+main();

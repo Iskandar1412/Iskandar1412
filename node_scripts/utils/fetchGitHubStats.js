@@ -151,51 +151,6 @@ async function fetchCurrentYearCommitItems() {
     return allItems;
 }
 
-// Cuenta TUS commits reales dentro de un repo específico (filtrado por autor, paginado).
-// Fuente directa del repo, no del Search API -> resultados exactos y completos.
-async function fetchUserCommitCountInRepo(owner, repoName) {
-    let count = 0;
-    let page = 1;
-    let fetched;
-
-    do {
-        try {
-            const response = await axios.get(`https://api.github.com/repos/${owner}/${repoName}/commits`, {
-                headers,
-                params: { author: USERNAME, per_page: 100, page },
-            });
-            fetched = response.data;
-            count += fetched.length;
-            page++;
-        } catch (error) {
-            console.warn(`⚠️ No se pudieron obtener tus commits en ${owner}/${repoName}: ${error.message}`);
-            return count;
-        }
-    } while (fetched.length === 100 && page <= 10); // tope de seguridad: 1000 commits/repo
-
-    return count;
-}
-
-// Total de commits de un repo completo (todos los autores), usando el header Link
-// de la última página en vez de paginar todo el historial.
-async function fetchTotalCommitCountInRepo(owner, repoName) {
-    try {
-        const response = await axios.get(`https://api.github.com/repos/${owner}/${repoName}/commits`, {
-            headers,
-            params: { per_page: 1 },
-        });
-        const link = response.headers.link;
-        if (link) {
-            const match = link.match(/[?&]page=(\d+)>; rel="last"/);
-            if (match) return parseInt(match[1], 10);
-        }
-        return response.data.length; // repo con 0 o 1 commit, sin paginación
-    } catch (error) {
-        console.warn(`⚠️ No se pudo obtener el total de commits de ${owner}/${repoName}: ${error.message}`);
-        return 0;
-    }
-}
-
 async function fetchGitHubStats() {
     try {
         console.log("📡 Obteniendo estadísticas de GitHub...");
@@ -231,16 +186,10 @@ async function fetchGitHubStats() {
             if (daysAgo >= 0 && daysAgo < 30) commitsLast30Days[29 - daysAgo]++;
         });
 
-        // --- Repos PROPIOS: tus commits reales en cada uno, pedidos directo al repo (no al Search API) ---
-        const ownRepoCommitsRaw = await Promise.all(
-            repos.map(async (repo) => ({
-                repo: repo.full_name,
-                count: await fetchUserCommitCountInRepo(USERNAME, repo.name),
-            }))
-        );
-        const ownRepoCommits = ownRepoCommitsRaw
-            .filter((r) => r.count > 0)
-            .sort((a, b) => b.count - a.count);
+        // --- Repos PROPIOS: listado simple, más reciente actualizado primero ---
+        const ownRepos = [...repos]
+            .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
+            .map((repo) => ({ repo: repo.full_name, updatedAt: repo.pushed_at }));
 
         // --- Repos de COLABORACIÓN: donde eres colaborador/miembro de org, NO owner ---
         let collabPage = 1;
@@ -257,27 +206,16 @@ async function fetchGitHubStats() {
         } while (fetchedCollabRepos.length === 100);
 
         // Deduplicar y excluir cualquier repo que en realidad sea tuyo
-        const uniqueCollabRepos = Object.values(
-            collabRepos.reduce((acc, repo) => {
-                if (repo.owner.login.toLowerCase() !== USERNAME.toLowerCase()) {
-                    acc[repo.full_name] = repo;
-                }
-                return acc;
-            }, {})
-        );
+        const uniqueCollabReposMap = {};
+        collabRepos.forEach((repo) => {
+            if (repo.owner.login.toLowerCase() !== USERNAME.toLowerCase()) {
+                uniqueCollabReposMap[repo.full_name] = repo;
+            }
+        });
 
-        const collaborationRepoCommitsRaw = await Promise.all(
-            uniqueCollabRepos.map(async (repo) => {
-                const myCommits = await fetchUserCommitCountInRepo(repo.owner.login, repo.name);
-                if (myCommits === 0) return null; // sin commits tuyos -> se descarta
-                const totalCommits = await fetchTotalCommitCountInRepo(repo.owner.login, repo.name);
-                return { repo: repo.full_name, totalCommits };
-            })
-        );
-
-        const collaborationRepoCommits = collaborationRepoCommitsRaw
-            .filter(Boolean)
-            .sort((a, b) => b.totalCommits - a.totalCommits);
+        const collaborationRepos = Object.values(uniqueCollabReposMap)
+            .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
+            .map((repo) => ({ repo: repo.full_name, updatedAt: repo.pushed_at }));
 
         // Conteo exacto de commits por CADA año que has tenido la cuenta (no limitado a 1000)
         await sleep(1200);
@@ -380,8 +318,8 @@ async function fetchGitHubStats() {
             commitActivity,
             commitsLast30Days,
             commitsByYear,
-            ownRepoCommits,
-            collaborationRepoCommits,
+            ownRepos,
+            collaborationRepos,
             prStatus,
             issueStatus,
             languages: sortedLanguages,

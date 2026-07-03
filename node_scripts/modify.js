@@ -55,7 +55,7 @@ function updateReadme() {
   </tr>
 </table>\n\n\n`,
         "\n\n---------\n\n",
-        "## 🧑‍💻 Commits por Repositorio Propio\n\n",
+        "## 🧑‍💻 Tus Repositorios (más recientes primero)\n\n",
         `<table align="center">
   <tr>
     <td align="center">
@@ -64,7 +64,7 @@ function updateReadme() {
   </tr>
 </table>\n\n\n`,
         "\n\n---------\n\n",
-        "## 🤝 Repositorios de Colaboración (commits totales del repo)\n\n",
+        "## 🤝 Repositorios de Colaboración (más recientes primero)\n\n",
         `<table align="center">
   <tr>
     <td align="center">
