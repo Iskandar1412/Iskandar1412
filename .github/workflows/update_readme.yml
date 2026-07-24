@@ -2,7 +2,7 @@ name: Actualizar README con gráficos de GitHub
 
 on:
   schedule:
-    - cron: "0 12 * * *"  # Ejecuta todos los días a las 12 PM UTC
+    - cron: "0 18 * * *"  # Ejecuta todos los días a las 12 PM UTC
   workflow_dispatch:  # Permite ejecutarlo manualmente desde GitHub Actions
 
 jobs:
