@@ -1,5 +1,27 @@
-# 💫 About Me:
-Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Computer Science and Systems Engineering at the University of San Carlos of Guatemala. I have a fervent passion for delving into the world of technology and solving intricate problems. My academic journey has been focused on harnessing the power of various programming languages and crafting innovative solutions.<br><br>- 📚 Currently pursuing my degree in Computer Science and Systems Engineering at the University of San Carlos of Guatemala.<br>- 💡 Eager to continuously enhance my skills in languages like Python, Java, JavaScript, and I've dabbled in Kotlin, Golang, and TypeScript.<br>- 💻 Enthusiastically engaged in honing my abilities through hands-on projects, where I refine my software development, system design, and algorithmic prowess.<br>- 🚀 Committed to exploring new vistas in the tech realm and staying updated with the latest industry trends and advancements.<br>- 🌐 Firm believer in the potential of technology to drive positive change and improve the world we live in.
+# 💫 About Me (Acerca de mí):
+Hello there! 👋 I'm Iskandar, a Computer Science and Systems Engineering professional from the University of San Carlos of Guatemala, passionate about software development, system design, and solving complex problems through technology.<br/>
+
+My main passion right now is **C# and the .NET ecosystem**, where I enjoy exploring everything from application development and backend services to APIs, databases, and software architecture. I'm always interested in understanding not only how things work, but also why they are designed the way they are.<br/>
+
+* 💻 Passionate about **C# and the .NET ecosystem**, continuously exploring new concepts, tools, and best practices.
+* 🧠 Interested in software architecture, backend development, system design, databases, and problem solving.
+* 💡 Experienced with technologies and languages such as **Python, Java, JavaScript, TypeScript, Kotlin, and Go**, among others.
+* 🚀 I enjoy building hands-on projects that allow me to strengthen my development skills and experiment with new technologies.
+* 🔍 Always looking to understand technology at a deeper level, from the underlying concepts to the implementation details.
+* 🌐 I believe technology is a powerful tool for creating useful solutions and turning complex problems into simpler ones.
+<br/><br/>
+
+¡Hola! 👋 Soy Iskandar, profesional de Ingeniería en Ciencias y Sistemas de la Universidad de San Carlos de Guatemala, apasionado por el desarrollo de software, el diseño de sistemas y la resolución de problemas complejos mediante la tecnología.<br/>
+
+Actualmente, mi principal pasión es **C# y todo el ecosistema de .NET**, donde disfruto explorar desde el desarrollo de aplicaciones y servicios backend hasta APIs, bases de datos y arquitectura de software. Me interesa no solo entender cómo funcionan las cosas, sino también comprender por qué están diseñadas de determinada manera.<br/>
+
+* 💻 Apasionado por **C# y el ecosistema .NET**, explorando continuamente nuevos conceptos, herramientas y buenas prácticas.
+* 🧠 Interesado en arquitectura de software, desarrollo backend, diseño de sistemas, bases de datos y resolución de problemas.
+* 💡 He trabajado con tecnologías y lenguajes como **Python, Java, JavaScript, TypeScript, Kotlin y Go**, entre otros.
+* 🚀 Me gusta desarrollar proyectos prácticos que me permitan fortalecer mis habilidades y experimentar con nuevas tecnologías.
+* 🔍 Siempre busco comprender la tecnología a un nivel más profundo, desde los conceptos fundamentales hasta los detalles de implementación.
+* 🌐 Creo que la tecnología es una herramienta poderosa para crear soluciones útiles y transformar problemas complejos en soluciones más sencillas.
+
 
 
 ## 💻 Tech Stack:
@@ -109,6 +131,8 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
   <img src="https://skillicons.dev/icons?i=neovim" height="40" alt="neovim" title="Neovim"/>
   <img width="12" />
   <img src="https://skillicons.dev/icons?i=vscode" height="40" alt="vscode" title="VS Code"/>
+  <img width="12" />
+  <img src="https://skillicons.dev/icons?i=visualstudio" height="40" alt="vscode" title="VS Code"/>
 </div>
 
 ### 📊 Monitoring & Observability
@@ -142,6 +166,74 @@ Hello there! 👋 I'm Iskandar, a dedicated engineering student majoring in Comp
 
 <!-- ## 📊 GitHub Stats: -->
 <!-- LANGUAGES-START -->
+## 📊 GitHub Stats
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/github_stats.png" />
+    </td>
+    <td align="center">
+      <img src="./node_scripts/scripts/language_chart.png" />
+    </td>
+  </tr>
+</table>
+
+
+---------
+
+
+## 🔢 Lenguajes Usados
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/languages_chart.png" />
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+---------
+
+
+## 📅 Commits por Año
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/commits_per_year.png" />
+    </td>
+    <td align="center">
+      <img src="./node_scripts/scripts/top_languages_this_year.png" />
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+---------
+
+
+## 🧑‍💻 Repositorios Recientes
+
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./node_scripts/scripts/commits_by_repo.png" />
+    </td>
+  </tr>
+</table>
+
 
 
 <!-- LANGUAGES-END -->
